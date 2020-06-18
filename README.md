@@ -5,6 +5,30 @@ This is a simple PHP app used to determine the overall health of a site hosted o
 As it stands, it relies on Lagoon conventions to determine which services are available
 and then checks if the services are up.
 
+## Configuration
+
+This script should reside in a directory separate from the application that is being hosted.
+For instance, the convention is that a webapp is stored in `/app` - you could store Healthz-php
+in `/healthz`. 
+
+```
+  location /lagoonhealthz {
+    root /lagoonhealthz;
+    rewrite ^/lagoonhealthz$ /lagoonhealthz/index.php;
+
+    location ~* \.php(/|$) {
+      include        /etc/nginx/fastcgi.conf;
+      fastcgi_param  SCRIPT_NAME        /index.php;
+      fastcgi_param  SCRIPT_FILENAME    /lagoonhealthz/index.php;
+      fastcgi_pass   ${NGINX_FASTCGI_PASS:-php}:9000;
+    }
+  }
+
+```
+
+Adding this to your nginx configuration will reroute all incoming traffic on `/healthz`
+to our current script.
+
 
 ## Extending checks
 
