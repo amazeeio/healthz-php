@@ -17,12 +17,7 @@ class PrometheusFormatTest extends TestCase
         $formatter = new \AmazeeIO\Health\Format\PrometheusFormat($checkDriver);
 
         $formatterOutput = $formatter->formattedResults();
-        var_dump($formatterOutput);
-//        $this->assertJson($formatterOutput);
-//        $formatterOutputAsArray = json_decode($formatterOutput, true);
-//        $this->assertIsArray($formatterOutputAsArray);
-//        $this->assertArrayHasKey('test_check_1', $formatterOutputAsArray);
-//        $this->assertEquals(\AmazeeIO\Health\Check\CheckInterface::STATUS_PASS, $formatterOutputAsArray['test_check_1']);
+        $this->assertStringContainsString("test_check_1_info 1", $formatterOutput);
     }
 
     protected function generateCheck(

@@ -28,7 +28,10 @@ class PrometheusFormat implements FormatInterface
                 //TODO: we'll need to make this sensitive to class
                 // eventually, but for now we can just return the
                 // status as a bool in the requisite
-                $r[$name . "_info"] = sprintf("%s_info %s", $name, $check->result() ? 1 : 0);
+                $metricName = sprintf("%s_info", $check->shortName());
+                $metricHelp = sprintf("# HELP %s %s\n", $metricName, $check->description());
+                $metricResult = sprintf("%s %s\n\n", $metricName, $check->result() ? 1 : 0);
+                $r[] = $metricHelp . $metricResult;
             }
             return $r;
         });

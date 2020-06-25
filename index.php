@@ -27,6 +27,7 @@ foreach (include(__DIR__ . '/checks.conf.php') as $check) {
     $driver->registerCheck(new $check($environment));
 }
 $queryParams = $serverRequest->getQueryParams();
+
 if(key_exists("format", $queryParams) && $queryParams["format"] == "prometheus") {
     $formatter = new \AmazeeIO\Health\Format\PrometheusFormat($driver);
 } else {
@@ -34,6 +35,7 @@ if(key_exists("format", $queryParams) && $queryParams["format"] == "prometheus")
 }
 
 $responseBody = $psr17Factory->createStream($formatter->formattedResults());
+//$responseBody = $psr17Factory->createStream(print_r($queryParams, true));
 $response = $psr17Factory->createResponse($driver->pass() ? 200 : 500)->withBody($responseBody)
   ->withHeader('Cache-Control','must-revalidate, no-cache, private')
   ->withHeader('Vary','User-Agent')
