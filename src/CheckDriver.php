@@ -41,6 +41,9 @@ class CheckDriver implements CheckDriverInterface
         return $checkStatuses;
     }
 
+    public function customRunCheck($customRunner) {
+        return $customRunner($this->applicableChecks);
+    }
 
     public function pass()
     {

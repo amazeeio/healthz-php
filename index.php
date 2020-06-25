@@ -26,8 +26,12 @@ $driver = new CheckDriver();
 foreach (include(__DIR__ . '/checks.conf.php') as $check) {
     $driver->registerCheck(new $check($environment));
 }
-
-$formatter = new \AmazeeIO\Health\Format\JsonFormat($driver);
+$queryParams = $serverRequest->getQueryParams();
+if(key_exists("format", $queryParams) && $queryParams["format"] == "prometheus") {
+    $formatter = new \AmazeeIO\Health\Format\PrometheusFormat($driver);
+} else {
+    $formatter = new \AmazeeIO\Health\Format\JsonFormat($driver);
+}
 
 $responseBody = $psr17Factory->createStream($formatter->formattedResults());
 $response = $psr17Factory->createResponse($driver->pass() ? 200 : 500)->withBody($responseBody)

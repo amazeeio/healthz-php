@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: bomoko
- * Date: 15/06/20
- * Time: 5:58 AM
- */
 
 namespace AmazeeIO\Health;
 
@@ -18,4 +12,6 @@ interface CheckDriverInterface
     public function pass();
 
     public function registerCheck(CheckInterface $check);
+
+    public function customRunCheck($customRunner);
 }
