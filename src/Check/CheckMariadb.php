@@ -21,13 +21,15 @@ class CheckMariadb extends BooleanCheck
 
     public function __construct(EnvironmentCollection $env)
     {
-        if ($env->has(['MARIADB_HOST', 'MARIADB_USERNAME', 'MARIADB_PASSWORD'])) {
-            $this->appliesInCurrentEnvironment = true;
-            $this->db_host = $env->get('MARIADB_HOST');
-            $this->db_username = $env->get('MARIADB_USERNAME');
-            $this->db_password = $env->get('MARIADB_PASSWORD');
-            $this->db_database = $env->get('MARIADB_DATABASE');
-        }
+        $this->db_host = $env->get('MARIADB_SERVICE_HOST', $env->get('MARIADB_HOST'));
+        $this->db_username = $env->get('MARIADB_USERNAME');
+        $this->db_password = $env->get('MARIADB_PASSWORD');
+        $this->db_database = $env->get('MARIADB_DATABASE');
+
+        $this->appliesInCurrentEnvironment = !empty($this->db_host) &&
+        !empty($this->db_username) &&
+        !empty($this->db_password) &&
+        !empty($this->db_database);
     }
 
     public function appliesInCurrentEnvironment()
