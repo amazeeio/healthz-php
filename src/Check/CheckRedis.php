@@ -17,6 +17,8 @@ class CheckRedis extends BooleanCheck
 
     public function __construct(EnvironmentCollection $env)
     {
+        // In general, the network service provided by the DBaaS/RaaS operators are used as a preference.
+        // Hence the order we examine the env vars
         $this->redisHost = $env->get('REDIS_HOST',
             $env->get('REDIS_SERVICE_HOST'));
         $this->redisPort = $env->get('REDIS_SERVICE_PORT');
