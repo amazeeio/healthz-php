@@ -15,22 +15,32 @@ class CheckSolr extends BooleanCheck
 
     protected $solrHost;
 
+    protected $solrPort;
+
     protected $solrCore = 'drupal';
 
-    protected $solrUser;
-
-    protected $solrPassword;
+    protected $solrPath = '/';
 
     public function __construct(EnvironmentCollection $env)
     {
-        if ($env->has(['SOLR_PORT'])) {
-            $this->applies = true;
-            $this->solrHost = $env->get('SOLR_PORT');
-            $this->solrHost = $env->get('SOLR_HOST', 'solr');
-            $this->solrCore = $env->get('SOLR_CORE', 'drupal');
-            $this->solrUser = $env->get('SOLR_USER', 'drupal');
-            $this->solrPassword = $env->get('SOLR_PASSWORD', 'drupal');
+        if($env->has(['SOLR_SERVICE_PORT', 'SOLR_SERVICE_HOST'])) { //First we deal with Kubernetes service environment vars
+            $this->solrPort = $env->get('SOLR_SERVICE_PORT');
+            $this->solrHost = $env->get('SOLR_SERVICE_HOST');
+        } elseif ($env->has(['SOLR_PORT', 'SOLR_HOST']) && is_numeric($env->get('SOLR_PORT'))) {
+            $this->solrPort = $env->get('SOLR_PORT');
+            $this->solrHost = $env->get('SOLR_HOST');
         }
+
+        $this->solrCore = $env->get('SOLR_CORE', 'drupal');
+        $this->solrPath = $env->get('SOLR_PATH', '/');
+
+        //Minimally, we need a host, port for this to apply
+        $this->applies = array_reduce([
+            $this->solrHost,
+            $this->solrPort,
+        ], 
+        function($val, $element) { return $val && !empty($element);}, 
+        true);
     }
 
     public function appliesInCurrentEnvironment()
@@ -42,12 +52,7 @@ class CheckSolr extends BooleanCheck
     {
         $config = [
           'endpoint' => [
-            'localhost' => [
-              'host' => $this->solrHost,
-              'port' => $this->solrPort,
-              'path' => '/',
-              'core' => $this->solrCore,
-            ],
+            'localhost' => $this->buildConfig(),
           ],
         ];
 
@@ -72,6 +77,14 @@ class CheckSolr extends BooleanCheck
         }
     }
 
+    private function buildConfig() {
+        return [
+          'host' => $this->solrHost,
+          'port' => $this->solrPort,
+          'core' => $this->solrCore,
+          'path' => $this->solrPath,
+        ];
+    }
 
     public function status()
     {

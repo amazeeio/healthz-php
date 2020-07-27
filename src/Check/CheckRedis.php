@@ -9,19 +9,21 @@ use Predis\Client;
 class CheckRedis extends BooleanCheck
 {
 
-    protected $redis_host;
+    protected $redisHost;
 
-    protected $redis_port;
+    protected $redisPort;
 
     protected $appliesInCurrentEnvironment = false;
 
     public function __construct(EnvironmentCollection $env)
     {
-        if($env->has('REDIS_HOST', 'REDIS_SERVICE_PORT')) {
-            $this->redis_host = $env->get('REDIS_HOST');
-            $this->redis_port = $env->get('REDIS_SERVICE_PORT');
-            $this->appliesInCurrentEnvironment = true;
-        }
+        // In general, the network service provided by the DBaaS/RaaS operators are used as a preference.
+        // Hence the order we examine the env vars
+        $this->redisHost = $env->get('REDIS_HOST',
+            $env->get('REDIS_SERVICE_HOST'));
+        $this->redisPort = $env->get('REDIS_SERVICE_PORT');
+        
+        $this->appliesInCurrentEnvironment = !empty($this->redisHost) && !empty($this->redisPort);
     }
 
     public function appliesInCurrentEnvironment()
@@ -34,8 +36,8 @@ class CheckRedis extends BooleanCheck
         try {
             $client = new Client([
               'scheme' => 'tcp',
-              'host' => $this->redis_host,
-              'port' => $this->redis_port,
+              'host' => $this->redisHost,
+              'port' => $this->redisPort,
               'timeout' => '0.5',
             ]);
 
