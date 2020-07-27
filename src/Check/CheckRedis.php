@@ -17,8 +17,8 @@ class CheckRedis extends BooleanCheck
 
     public function __construct(EnvironmentCollection $env)
     {
-        if($env->has('REDIS_HOST', 'REDIS_SERVICE_PORT')) {
-            $this->redis_host = $env->get('REDIS_HOST');
+        if($env->has('REDIS_SERVICE_HOST', 'REDIS_SERVICE_PORT')) {
+            $this->redis_host = $env->get('REDIS_SERVICE_HOST');
             $this->redis_port = $env->get('REDIS_SERVICE_PORT');
             $this->appliesInCurrentEnvironment = true;
         }
