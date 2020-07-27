@@ -21,7 +21,7 @@ class CheckMariadb extends BooleanCheck
 
     public function __construct(EnvironmentCollection $env)
     {
-        $this->db_host = $env->get('MARIADB_SERVICE_HOST', $env->get('MARIADB_HOST'));
+        $this->db_host = $env->get('MARIADB_HOST', $env->get('MARIADB_SERVICE_HOST'));
         $this->db_username = $env->get('MARIADB_USERNAME');
         $this->db_password = $env->get('MARIADB_PASSWORD');
         $this->db_database = $env->get('MARIADB_DATABASE');
