@@ -6,7 +6,7 @@ use AmazeeIO\Health\CheckDriver;
 
 // Note, we don't use 500s because of potential negative caching
 // for example, Akamai
-const DEFAULT_FAIL_HTTP_RESPONSE = 599;
+const DEFAULT_FAIL_HTTP_RESPONSE = 500;
 
 //Wrap any environment vars we want to pass to our checks
 $environment = new \AmazeeIO\Health\EnvironmentCollection($_SERVER);
@@ -36,7 +36,7 @@ if(key_exists("format", $queryParams) && $queryParams["format"] == "prometheus")
 
 $responseBody = $psr17Factory->createStream($formatter->formattedResults());
 //$responseBody = $psr17Factory->createStream(print_r($queryParams, true));
-$response = $psr17Factory->createResponse($driver->pass() ? 200 : DEFAULT_FAIL_HTTP_RESPONSE)->withBody($responseBody)
+$response = $psr17Factory->createResponse($driver->pass() ? 200 : $environment->get('HEALTHZ_PHP_HTTP_FAIL_CODE', DEFAULT_FAIL_HTTP_RESPONSE))->withBody($responseBody)
   ->withHeader('Cache-Control','must-revalidate, no-cache, private')
   ->withHeader('Vary','User-Agent')
   ->withHeader('Content-Type', $formatter->httpHeaderContentType());

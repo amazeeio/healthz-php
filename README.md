@@ -29,6 +29,12 @@ in `/healthz`.
 Adding this to your nginx configuration will reroute all incoming traffic on `/healthz`
 to our current script.
 
+### Setting failure response code
+
+By default, we return an http 500 response code for any failed checks. This can be a potential problem for setups that involve negative caching of errors.
+
+If you would like to have the system return something other than a 500, you can set the environment variable `HEALTHZ_PHP_HTTP_FAIL_CODE` with the return code.
+
 
 ## Extending checks
 
