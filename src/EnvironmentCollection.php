@@ -3,7 +3,7 @@
 namespace AmazeeIO\Health;
 
 
-use Tightenco\Collect\Support\Collection;
+use Illuminate\Support\Collection;
 
 class EnvironmentCollection extends Collection
 {
