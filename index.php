@@ -41,4 +41,4 @@ $response = $psr17Factory->createResponse($driver->pass() ? 200 : $environment->
   ->withHeader('Vary','User-Agent')
   ->withHeader('Content-Type', $formatter->httpHeaderContentType());
 
-(new \Zend\HttpHandlerRunner\Emitter\SapiEmitter())->emit($response);
+(new \Laminas\HttpHandlerRunner\Emitter\SapiEmitter())->emit($response);
