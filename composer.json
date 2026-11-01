@@ -9,7 +9,7 @@
       }
     },
     "require": {
-        "predis/predis": "^1.0",
+        "predis/predis": "^3.7",
         "guzzlehttp/psr7": "^1.0",
         "solarium/solarium": "^6.2",
         "nyholm/psr7": "^1.3",
